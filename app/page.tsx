@@ -70,6 +70,27 @@ const formatNumber = (value: number, options: Intl.NumberFormatOptions = {}) =>
     ...options,
   }).format(value);
 
+function MemoryPhotoCard({
+  className = "",
+  photo,
+}: {
+  className?: string;
+  photo: FloatingPhoto;
+}) {
+  return (
+    <figure className={`memory-photo ${className}`} aria-hidden="true">
+      <Image
+        alt=""
+        className="memory-photo-image"
+        height={photo.height}
+        sizes="(max-width: 900px) 82vw, 18vw"
+        src={photo.src}
+        width={photo.width}
+      />
+    </figure>
+  );
+}
+
 const elapsedStats = (now: number): LiveStats => {
   const elapsedMs = Math.max(0, now - START_DATE.getTime());
   const elapsedSeconds = elapsedMs / 1000;
@@ -331,7 +352,7 @@ const counterGroups: CounterGroup[] = [
 ];
 
 export default function Home() {
-  const [now, setNow] = useState(() => Date.now());
+  const [now, setNow] = useState(() => START_DATE.getTime());
 
   useEffect(() => {
     const tick = () => setNow(Date.now());
@@ -347,15 +368,6 @@ export default function Home() {
   return (
     <main className="anniversary-shell min-h-screen overflow-hidden bg-[#fff1bf] text-[#3b2416]">
       <section className="relative flex min-h-[92vh] items-center px-5 py-12 sm:px-8 lg:px-12">
-        <Image
-          alt=""
-          className="section-memory-photo section-memory-photo-hero"
-          height={floatingPhotos[0].height}
-          sizes="(max-width: 900px) 34vw, 18vw"
-          src={floatingPhotos[0].src}
-          width={floatingPhotos[0].width}
-        />
-
         <div className="sun-orb" aria-hidden="true">
           <span />
           <span />
@@ -380,8 +392,8 @@ export default function Home() {
           ))}
         </div>
 
-        <div className="relative z-10 mx-auto grid w-full max-w-7xl items-end gap-12 2xl:grid-cols-[minmax(0,0.95fr)_minmax(320px,0.42fr)]">
-          <div className="max-w-5xl pt-20 sm:pt-28 2xl:pt-0">
+        <div className="hero-layout relative z-10 mx-auto grid w-full max-w-7xl items-end gap-12">
+          <div className="hero-copy max-w-5xl pt-20 sm:pt-28 2xl:pt-0">
             <p className="mb-5 inline-flex -rotate-2 rounded-full border-4 border-[#3b2416] bg-[#f6d66f] px-5 py-2 text-sm font-black uppercase tracking-[0.22em] shadow-[6px_6px_0_#3b2416]">
               Skupa od
             </p>
@@ -413,56 +425,71 @@ export default function Home() {
         </div>
       </section>
 
-      {counterGroups.map((group, groupIndex) => (
-        <section
-          className={`counter-section ${group.tone}`}
-          id={group.id}
-          key={group.id}
-        >
-          {floatingPhotos[groupIndex + 1] ? (
-            <Image
-              alt=""
-              className={`section-memory-photo section-memory-photo-${groupIndex + 1}`}
-              height={floatingPhotos[groupIndex + 1].height}
-              sizes="(max-width: 900px) 30vw, 16vw"
-              src={floatingPhotos[groupIndex + 1].src}
-              width={floatingPhotos[groupIndex + 1].width}
-            />
-          ) : null}
+      {counterGroups.map((group, groupIndex) => {
+        const sectionPhoto =
+          groupIndex === counterGroups.length - 1
+            ? floatingPhotos[0]
+            : floatingPhotos[groupIndex + 1];
 
-          {groupIndex === 0 ? (
-            <div className="terrain-strip top" aria-hidden="true" />
-          ) : null}
-          <div className="relative z-10 mx-auto max-w-7xl">
-            <div className="counter-heading">
-              <p className="mb-4 text-sm font-black uppercase tracking-[0.24em]">
-                {group.eyebrow}
-              </p>
-              <h2 className="font-display max-w-4xl text-6xl leading-[0.9] sm:text-8xl">
-                {group.title}
-              </h2>
-            </div>
+        return (
+          <section
+            className={`counter-section ${group.tone}`}
+            id={group.id}
+            key={group.id}
+          >
+            {groupIndex === 0 ? (
+              <div className="terrain-strip top" aria-hidden="true" />
+            ) : null}
+            <div
+              className={`counter-section-layout ${
+                sectionPhoto
+                  ? groupIndex % 2 === 0
+                    ? "counter-section-layout-right"
+                    : "counter-section-layout-left"
+                  : ""
+              }`}
+            >
+              <div className="counter-content">
+                <div className="counter-heading">
+                  <p className="mb-4 text-sm font-black uppercase tracking-[0.24em]">
+                    {group.eyebrow}
+                  </p>
+                  <h2 className="font-display max-w-4xl text-6xl leading-[0.9] sm:text-8xl">
+                    {group.title}
+                  </h2>
+                </div>
 
-            <div className="counter-grid mt-12">
-              {group.counters.map((counter, index) => (
-                <article
-                  className={`counter-card panel-${((groupIndex + index) % 8) + 1}`}
-                  key={`${group.id}-${counter.label}`}
-                >
-                  <div className="counter-index">
-                    {String(index + 1).padStart(2, "0")}
-                  </div>
-                  <span className="counter-value">{counter.value(stats)}</span>
-                  <h3 className="counter-label">{counter.label}</h3>
-                  {counter.note ? (
-                    <p className="counter-note">{counter.note}</p>
-                  ) : null}
-                </article>
-              ))}
+                <div className="counter-grid mt-12">
+                  {group.counters.map((counter, index) => (
+                    <article
+                      className={`counter-card panel-${((groupIndex + index) % 8) + 1}`}
+                      key={`${group.id}-${counter.label}`}
+                    >
+                      <div className="counter-index">
+                        {String(index + 1).padStart(2, "0")}
+                      </div>
+                      <span className="counter-value">
+                        {counter.value(stats)}
+                      </span>
+                      <h3 className="counter-label">{counter.label}</h3>
+                      {counter.note ? (
+                        <p className="counter-note">{counter.note}</p>
+                      ) : null}
+                    </article>
+                  ))}
+                </div>
+              </div>
+
+              {sectionPhoto ? (
+                <MemoryPhotoCard
+                  className={`memory-photo-section memory-photo-section-${groupIndex + 1}`}
+                  photo={sectionPhoto}
+                />
+              ) : null}
             </div>
-          </div>
-        </section>
-      ))}
+          </section>
+        );
+      })}
 
       <section className="final-sun relative flex min-h-[78vh] items-center justify-center overflow-hidden px-5 py-24 text-center text-[#3b2416]">
         <div className="relative z-10 max-w-5xl">

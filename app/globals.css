@@ -142,6 +142,63 @@ html {
   bottom: 24%;
 }
 
+.hero-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.memory-photo {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: min(78vw, 18rem);
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  pointer-events: none;
+  user-select: none;
+  border: 5px solid #3b2416;
+  border-radius: 20px 12px 28px 14px;
+  background: #fff8dc;
+  box-shadow: 9px 9px 0 color-mix(in srgb, var(--card-shadow, #3b2416) 82%, transparent);
+  rotate: var(--photo-rotate, -5deg);
+}
+
+.memory-photo-image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.memory-photo-section {
+  justify-self: center;
+  align-self: center;
+}
+
+.memory-photo-section-1 {
+  --photo-rotate: 7deg;
+}
+
+.memory-photo-section-2 {
+  --photo-rotate: -8deg;
+}
+
+.memory-photo-section-3 {
+  --photo-rotate: 6deg;
+}
+
+.memory-photo-section-4 {
+  --photo-rotate: -7deg;
+}
+
+.memory-photo-section-6 {
+  aspect-ratio: 0.68;
+  --photo-rotate: 7deg;
+}
+
 .terrain-strip {
   position: absolute;
   left: 0;
@@ -153,55 +210,6 @@ html {
 
 .terrain-strip.top {
   top: -1px;
-}
-
-.section-memory-photo {
-  position: absolute;
-  z-index: 0;
-  display: block;
-  width: clamp(8rem, 16vw, 15rem);
-  height: clamp(6.5rem, 12vw, 11.5rem);
-  object-fit: cover;
-  pointer-events: none;
-  user-select: none;
-  border: 5px solid #3b2416;
-  border-radius: 20px 12px 28px 14px;
-  background: #fff8dc;
-  box-shadow: 9px 9px 0 color-mix(in srgb, var(--card-shadow, #3b2416) 82%, transparent);
-  opacity: 0.92;
-  rotate: var(--photo-rotate, -5deg);
-}
-
-.section-memory-photo-hero {
-  bottom: clamp(1rem, 6vh, 4rem);
-  left: clamp(1rem, 5vw, 4rem);
-  width: clamp(8rem, 18vw, 17rem);
-  height: clamp(10rem, 24vw, 22rem);
-  --photo-rotate: -7deg;
-}
-
-.section-memory-photo-1 {
-  top: 4.5rem;
-  right: clamp(-3rem, 2vw, 2rem);
-  --photo-rotate: 10deg;
-}
-
-.section-memory-photo-2 {
-  bottom: 3.5rem;
-  left: clamp(-3rem, 2vw, 2rem);
-  --photo-rotate: -9deg;
-}
-
-.section-memory-photo-3 {
-  right: clamp(-2rem, 5vw, 5rem);
-  bottom: 4rem;
-  --photo-rotate: -12deg;
-}
-
-.section-memory-photo-4 {
-  top: 5.5rem;
-  left: clamp(-2rem, 4vw, 4rem);
-  --photo-rotate: 8deg;
 }
 
 .memory-card {
@@ -225,6 +233,20 @@ html {
     radial-gradient(circle at 8% 18%, var(--section-spot) 0 9rem, transparent 9.2rem),
     radial-gradient(circle at 86% 72%, rgba(255, 241, 191, 0.18) 0 12rem, transparent 12.2rem),
     var(--section-bg);
+}
+
+.counter-section-layout {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  max-width: 80rem;
+  margin: 0 auto;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.counter-content {
+  min-width: 0;
 }
 
 .counter-section-earth {
@@ -710,6 +732,42 @@ html {
   }
 }
 
+@media (min-width: 1024px) {
+  .hero-layout {
+    grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.42fr);
+  }
+}
+
+@media (min-width: 1100px) {
+  .counter-section-layout-right {
+    grid-template-columns: minmax(0, 1fr) minmax(11rem, 16rem);
+  }
+
+  .counter-section-layout-left {
+    grid-template-columns: minmax(11rem, 16rem) minmax(0, 1fr);
+  }
+
+  .counter-section-layout-left .counter-content {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .counter-section-layout-left .memory-photo-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .counter-section-layout-right .counter-content {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .counter-section-layout-right .memory-photo-section {
+    grid-column: 2;
+    grid-row: 1;
+  }
+}
+
 @media (max-width: 900px) {
   .counter-section {
     padding: 5rem 1.25rem;
@@ -735,31 +793,15 @@ html {
     opacity: 0.72;
   }
 
-  .section-memory-photo {
-    width: clamp(5.8rem, 30vw, 9rem);
-    height: clamp(4.8rem, 23vw, 7rem);
+  .memory-photo {
+    width: min(82vw, 18rem);
     border-width: 3px;
     border-radius: 14px 10px 18px 12px;
     box-shadow: 5px 5px 0 #3b2416;
-    opacity: 0.5;
   }
 
-  .section-memory-photo-hero {
-    right: -1.8rem;
-    bottom: 7rem;
-    left: auto;
-    width: clamp(5.5rem, 28vw, 8.5rem);
-    height: clamp(8rem, 42vw, 12rem);
-  }
-
-  .section-memory-photo-1,
-  .section-memory-photo-3 {
-    right: -2.2rem;
-  }
-
-  .section-memory-photo-2,
-  .section-memory-photo-4 {
-    left: -2.2rem;
+  .memory-photo-section {
+    margin: 0 auto;
   }
 
   .orbit-note {
