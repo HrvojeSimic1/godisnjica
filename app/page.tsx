@@ -13,6 +13,7 @@ type LiveStats = {
   elapsedMinutes: number;
   elapsedHours: number;
   elapsedDays: number;
+  elapsedCalendarMonths: number;
   displayDays: number;
 };
 
@@ -70,6 +71,43 @@ const formatNumber = (value: number, options: Intl.NumberFormatOptions = {}) =>
     ...options,
   }).format(value);
 
+const dateFromStartMonthOffset = (monthOffset: number) =>
+  new Date(
+    START_DATE.getFullYear(),
+    START_DATE.getMonth() + monthOffset,
+    START_DATE.getDate(),
+    START_DATE.getHours(),
+    START_DATE.getMinutes(),
+    START_DATE.getSeconds(),
+    START_DATE.getMilliseconds(),
+  );
+
+const calendarMonthsSince = (now: number) => {
+  if (now <= START_DATE.getTime()) {
+    return 0;
+  }
+
+  const current = new Date(now);
+  let completedMonths =
+    (current.getFullYear() - START_DATE.getFullYear()) * 12 +
+    current.getMonth() -
+    START_DATE.getMonth();
+
+  if (dateFromStartMonthOffset(completedMonths).getTime() > now) {
+    completedMonths -= 1;
+  }
+
+  const lastAnniversary = dateFromStartMonthOffset(completedMonths).getTime();
+  const nextAnniversary = dateFromStartMonthOffset(
+    completedMonths + 1,
+  ).getTime();
+
+  return (
+    completedMonths +
+    (now - lastAnniversary) / (nextAnniversary - lastAnniversary)
+  );
+};
+
 function MemoryPhotoCard({
   className = "",
   photo,
@@ -104,6 +142,7 @@ const elapsedStats = (now: number): LiveStats => {
     elapsedMinutes,
     elapsedHours,
     elapsedDays,
+    elapsedCalendarMonths: calendarMonthsSince(now),
     displayDays: Math.max(1, Math.ceil(elapsedDays)),
   };
 };
@@ -116,8 +155,8 @@ const counterGroups: CounterGroup[] = [
     tone: "counter-section-earth",
     counters: [
       {
-        value: ({ elapsedDays }) =>
-          formatNumber(elapsedDays / 30.44, {
+        value: ({ elapsedCalendarMonths }) =>
+          formatNumber(elapsedCalendarMonths, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           }),
@@ -268,7 +307,7 @@ const counterGroups: CounterGroup[] = [
   },
   {
     id: "Hrana i pare",
-    title: "Money & food",
+    title: "Hrana i pare",
     eyebrow:
       "Obroka koje smo mogli pojest skupa, i novaca koje smo mogli zaraditi za daljnje večere",
     tone: "counter-section-cream",
@@ -374,24 +413,6 @@ export default function Home() {
           <span />
         </div>
 
-        <div className="absolute left-4 top-4 z-20 flex flex-wrap gap-2 text-[0.72rem] font-black uppercase tracking-[0.18em] text-[#3b2416] sm:left-8 sm:top-8">
-          {counterGroups.slice(0, 3).map((group, index) => (
-            <a
-              className={`nav-chip ${
-                index === 0
-                  ? "bg-[#ffcf48]"
-                  : index === 1
-                    ? "bg-[#89a94f]"
-                    : "bg-[#e77945]"
-              }`}
-              href={`#${group.id}`}
-              key={group.id}
-            >
-              {group.id}
-            </a>
-          ))}
-        </div>
-
         <div className="hero-layout relative z-10 mx-auto grid w-full max-w-7xl items-end gap-12">
           <div className="hero-copy max-w-5xl pt-20 sm:pt-28 2xl:pt-0">
             <p className="mb-5 inline-flex -rotate-2 rounded-full border-4 border-[#3b2416] bg-[#f6d66f] px-5 py-2 text-sm font-black uppercase tracking-[0.22em] shadow-[6px_6px_0_#3b2416]">
@@ -400,7 +421,7 @@ export default function Home() {
             <h1 className="font-display max-w-5xl text-[clamp(3rem,8vw,7.6rem)] font-black leading-[0.86] text-[#4a2a18]">
               05/05/2024
             </h1>
-            <p className="mt-8 max-w-2xl text-xl font-bold leading-8 text-[#5f3a21] sm:text-2xl">
+            <p className="hero-intro mt-8 max-w-2xl text-xl font-bold leading-8 text-[#5f3a21] sm:text-2xl">
               Mali brojač s glupostima koje sam mogao usporedit sa jebeno
               prelijepe 2 godine koje sam proveo s tobom :D
             </p>

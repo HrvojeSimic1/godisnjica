@@ -59,21 +59,6 @@ html {
   background-size: 72px 126px;
 }
 
-.nav-chip {
-  border: 3px solid #3b2416;
-  border-radius: 999px;
-  padding: 0.58rem 0.85rem;
-  box-shadow: 4px 4px 0 #3b2416;
-  transition:
-    transform 160ms ease,
-    box-shadow 160ms ease;
-}
-
-.nav-chip:hover {
-  transform: translate(2px, 2px) rotate(-1deg);
-  box-shadow: 2px 2px 0 #3b2416;
-}
-
 .sun-orb {
   position: absolute;
   top: -12vw;
@@ -148,6 +133,10 @@ html {
 
 .hero-copy {
   min-width: 0;
+}
+
+.hero-intro {
+  color: #5f3a21;
 }
 
 .memory-photo {
@@ -793,6 +782,16 @@ html {
     opacity: 0.72;
   }
 
+  .hero-intro {
+    color: #2d190f;
+    text-shadow:
+      1px 0 0 #fff8dc,
+      -1px 0 0 #fff8dc,
+      0 1px 0 #fff8dc,
+      0 -1px 0 #fff8dc,
+      2px 2px 0 rgba(255, 248, 220, 0.78);
+  }
+
   .memory-photo {
     width: min(82vw, 18rem);
     border-width: 3px;
@@ -841,6 +840,11 @@ html {
 }
 
 @media (max-width: 640px) {
+  .counter-heading h2 {
+    font-size: clamp(2.75rem, 12vw, 3.35rem);
+    line-height: 0.95;
+  }
+
   .orbit-field {
     display: flex;
     min-height: auto;
